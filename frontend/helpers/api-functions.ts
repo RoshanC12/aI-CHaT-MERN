@@ -1,4 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
+import axios from "./axiosConfig"; // relative path from api-functions.ts
+
 
 export const userLogin = async (email: string, password: string) => {
 	try {
@@ -34,7 +36,7 @@ export const userSignup = async (
 
 export const getAuthStatus = async () => {
 	try {
-		const response = await axios.get("/user/auth-status");
+		const response = await axios.get("/user/auth-status", { withCredentials: true });
 		if (response.status !== 200) {
 			throw new Error("Could not verify authentication status");
 		}
@@ -46,20 +48,15 @@ export const getAuthStatus = async () => {
 };
 
 export const postChatRequest = async (message: string) => {
-	console.log("hello", message);
-	try {
-		const response = await axios.post("/chat/new", { message });
-		console.log(response);
-		if (response.status !== 200) {
-			throw new Error();
-		}
-		const data = await response.data;
-		return data;
-	} catch (err: any) {
-		console.log(err);
-		throw new Error(err.message);
-	}
+  try {
+    const response = await axios.post("/chat/new", { message });
+    return response.data;
+  } catch (err: any) {
+    console.error("API Error:", err.response?.data || err.message);
+    throw new Error(err.response?.data?.message || "Failed to post chat message");
+  }
 };
+
 
 export const getAllChats = async () => {
 	try {

@@ -8,33 +8,31 @@ import { useAuth } from "./context/context";
 
 import styles from "./App.module.css";
 
+import { Navigate } from "react-router-dom";
+
 function App() {
-	let routes;
-	if (useAuth()?.isLoggedIn) {
-		routes = (
-			<Routes>
-				<Route path='/' element={<Home />} />
-				<Route path='/chat' element={<Chat />} />
-			</Routes>
-		);
-	} else {
-		routes = (
-			<Routes>
-				<Route path='/' element={<Home />} />
-				<Route path='/login' element={<Login />} />
-				<Route path='/signup' element={<Signup />} />
-			</Routes>
-		);
-	}
+	const auth = useAuth();
 
 	return (
 		<div>
 			<Header />
 			<main className={styles.routes}>
-                {routes}
-            </main>
+				<Routes>
+					<Route path='/' element={<Home />} />
+					<Route path='/login' element={<Login />} />
+					<Route path='/signup' element={<Signup />} />
+					{/* Protected Route */}
+					<Route
+						path='/chat'
+						element={
+							auth?.isLoggedIn ? <Chat /> : <Navigate to='/login' replace />
+						}
+					/>
+				</Routes>
+			</main>
 		</div>
 	);
 }
+
 
 export default App;

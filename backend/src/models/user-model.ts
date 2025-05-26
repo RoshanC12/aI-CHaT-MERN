@@ -1,21 +1,35 @@
-import mongoose from "mongoose";
-import chatSchema from "./chat-model.js";
+import mongoose, { Schema, Document } from "mongoose";
 
-const userSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true,
-	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-	},
-	password: {
-		type: String,
-		required: true,
-	},
-	chats: [chatSchema],
+interface Chat {
+  role: "user" | "assistant" | "system";
+  content: string;
+}
+
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  chats: Chat[];
+}
+
+const ChatSchema = new Schema<Chat>({
+  role: {
+    type: String,
+    enum: ["user", "assistant", "system"],
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
 });
 
-export default mongoose.model("User", userSchema);
+const UserSchema = new Schema<IUser>({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  chats: [ChatSchema],
+});
+
+const User = mongoose.model<IUser>("User", UserSchema);
+export default User;

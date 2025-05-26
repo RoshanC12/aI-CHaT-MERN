@@ -14,7 +14,7 @@ type Props = {
 };
 
 const ChatItem = (props: Props) => {
-	
+
 	const auth = useAuth();
 
 	const botMsg = (
@@ -23,24 +23,30 @@ const ChatItem = (props: Props) => {
 				<img src={botIcon} alt='chat bot icon'></img>
 			</div>
 			<div className={`${styles.msg} markdown-body`}>
-                <ReactMarkdown remarkPlugins={[reactGFM]} rehypePlugins={[rehypeHighlight]}>  
-                    {props.content}
-                </ReactMarkdown>
+				<ReactMarkdown remarkPlugins={[reactGFM]} rehypePlugins={[rehypeHighlight]}>
+					{props.content}
+				</ReactMarkdown>
 			</div>
 		</div>
 	);
 
-	const userMsg = (
-		<div className={`${styles.parent} ${styles.user_parent}`}>
-			<div className={`${styles.avatar} ${styles.user_avatar}`}>
-				{auth?.user?.name[0]}
-				{auth?.user?.name.split(" ")[1][0]}
-			</div>
-			<div className={styles.msg}>
-				<p>{props.content}</p>
-			</div>
+const userMsg = (
+	<>
+		<div className={`${styles.avatar} ${styles.user_avatar}`}>
+			{(() => {
+				const name = auth?.user?.name?.trim() || "User";
+				const nameParts = name.split(" ");
+				const firstInitial = nameParts[0]?.[0] || "U";
+				const secondInitial = nameParts[1]?.[0] || "";
+				return (firstInitial + secondInitial).toUpperCase();
+			})()}
 		</div>
-	);
+		<div className={styles.msg}>
+			<p>{props.content}</p>
+		</div>
+	</>
+);
+
 
 	return (
 		<>
