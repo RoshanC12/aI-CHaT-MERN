@@ -1,4 +1,5 @@
 name: Push Code to Backend Branch
+
 on:
   push:
     paths:
@@ -8,14 +9,14 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    steps:
 
-    - uses: actions/checkout@master
-    
-    - name: Deploy Backend Code
-      uses: s0/git-publish-subdir-action@develop
-      env:
-        REPO: self
-        BRANCH: backend
-        FOLDER: backend
-        GITHUB_TOKEN: ${{ secrets.WORKFLOW1 }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy Backend Code
+        uses: s0/git-publish-subdir-action@develop
+        with:
+          repo: self
+          branch: backend
+          folder: backend
+          token: ${{ secrets.GITHUB_TOKEN }}
